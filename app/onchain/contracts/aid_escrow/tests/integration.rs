@@ -77,7 +77,6 @@ fn test_multiple_packages() {
 }
 
 #[test]
-#[test]
 #[should_panic]
 fn test_invalid_amount_panics() {
     let env = Env::default();
