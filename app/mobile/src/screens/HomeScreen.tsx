@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -14,10 +14,28 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Soter Mobile</Text>
       <Text style={styles.subtitle}>Transparent aid, directly delivered.</Text>
-      <Button
-        title="Check Backend Health"
-        onPress={() => navigation.navigate('Health')}
-      />
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="Check Backend Health"
+          onPress={() => navigation.navigate('Health')}
+        />
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="View Aid Overview (Coming Soon)"
+          color="#94a3b8"
+          onPress={() => Alert.alert('Coming Soon', 'Coming in a future wave')}
+        />
+      </View>
+
+      <View style={styles.buttonWrapper}>
+        <Button
+          title="View Aid Details (Coming Soon)"
+          color="#94a3b8"
+          onPress={() => Alert.alert('Coming Soon', 'Coming in a future wave')}
+        />
+      </View>
     </View>
   );
 };
@@ -40,5 +58,10 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
     marginBottom: 30,
+  },
+  buttonWrapper: {
+    marginBottom: 16,
+    width: '100%',
+    maxWidth: 300,
   },
 });
