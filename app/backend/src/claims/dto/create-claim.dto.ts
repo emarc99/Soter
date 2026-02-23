@@ -35,10 +35,9 @@ export class CreateClaimDto {
   @IsString()
   recipientRef: string;
 
-  @ApiProperty({
-    description: 'Reference to evidence supporting the claim',
+  @ApiPropertyOptional({
+    description: 'Reference or link to evidence supporting the claim (e.g., photo, document hash).',
     example: 'evidence-456',
-    required: false,
   })
   @IsOptional()
   @IsString()

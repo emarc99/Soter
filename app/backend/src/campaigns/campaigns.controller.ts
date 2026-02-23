@@ -14,7 +14,12 @@ import {
   ApiOperation,
   ApiParam,
   ApiQuery,
-  ApiResponse,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { CampaignsService } from './campaigns.service';
@@ -27,27 +32,24 @@ import { AppRole } from 'src/auth/app-role.enum';
 @ApiTags('Campaigns')
 @Controller('campaigns')
 export class CampaignsController {
-  constructor(private readonly campaigns: CampaignsService) {}
+  constructor(private readonly campaigns: CampaignsService) { }
 
   @Post()
   @Roles(AppRole.admin, AppRole.ngo)
   @ApiOperation({ summary: 'Create a campaign' })
   @ApiBody({ type: CreateCampaignDto })
-  @ApiResponse({ status: 201, description: 'Campaign created' })
-  @ApiResponse({ status: 403, description: 'Insufficient role' })
+  @ApiCreatedResponse({ description: 'Campaign created successfully.' })
+  @ApiBadRequestResponse({ description: 'Invalid input parameters or malformed request body.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid authentication credentials.' })
+  @ApiForbiddenResponse({ description: 'Access denied - insufficient permissions for this operation.' })
   async create(@Body() dto: CreateCampaignDto) {
     const campaign = await this.campaigns.create(dto);
     return ApiResponseDto.ok(campaign, 'Campaigns created successfully');
   }
 
   @Get()
-  @ApiOperation({ summary: 'List campaigns' })
-  @ApiQuery({
-    name: 'includeArchived',
-    required: false,
-    type: Boolean,
-    description: 'Include archived campaigns',
-  })
+  @ApiOkResponse({ description: 'List of campaigns retrieved successfully.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid authentication credentials.' })
   async list(
     @Query('includeArchived', new DefaultValuePipe(false), ParseBoolPipe)
     includeArchived: boolean,
@@ -57,24 +59,33 @@ export class CampaignsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get campaign by id' })
-  @ApiParam({ name: 'id', description: 'Campaign id (cuid)' })
+  @ApiOkResponse({ description: 'Campaign details retrieved successfully.' })
+  @ApiNotFoundResponse({ description: 'The specified campaign was not found.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid authentication credentials.' })
   async get(@Param('id') id: string) {
     const campaign = await this.campaigns.findOne(id);
     return ApiResponseDto.ok(campaign, 'Campaign fetched successfully');
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update campaign' })
-  @ApiBody({ type: UpdateCampaignDto })
+  @ApiOkResponse({ description: 'Campaign updated successfully.' })
+  @ApiNotFoundResponse({ description: 'The specified campaign was not found.' })
+  @ApiBadRequestResponse({ description: 'Invalid update data or malformed request body.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid authentication credentials.' })
+  @ApiForbiddenResponse({ description: 'Access denied - insufficient permissions.' })
   async update(@Param('id') id: string, @Body() dto: UpdateCampaignDto) {
     const updateData = await this.campaigns.update(id, dto);
     return ApiResponseDto.ok(updateData, 'Campaign updated successfully');
   }
 
-  @Patch(':id/archive')
-  @ApiOperation({ summary: 'Archive campaign (soft archive)' })
-  @ApiParam({ name: 'id', description: 'Campaign id (cuid)' })
+  @ApiOperation({
+    summary: 'Archive campaign (soft archive)',
+    description: 'Marks a campaign as archived. Archived campaigns are hidden from general listings.',
+  })
+  @ApiOkResponse({ description: 'Campaign archived successfully.' })
+  @ApiNotFoundResponse({ description: 'The specified campaign was not found.' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid authentication credentials.' })
+  @ApiForbiddenResponse({ description: 'Access denied - insufficient permissions.' })
   async archive(@Param('id') id: string) {
     const campaignData = await this.campaigns.archive(id);
     const { campaign, alreadyArchived } = campaignData;
