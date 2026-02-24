@@ -11,13 +11,13 @@ import {
 import {
   ApiTags,
   ApiOperation,
-  ApiResponse,
   ApiParam,
   ApiBearerAuth,
   ApiConsumes,
   ApiSecurity,
   ApiOkResponse,
   ApiCreatedResponse,
+  ApiAcceptedResponse,
   ApiBadRequestResponse,
   ApiUnauthorizedResponse,
   ApiNotFoundResponse,
@@ -52,8 +52,7 @@ export class VerificationController {
     description: 'Unique identifier of the claim to verify',
     example: 'clv789xyz123',
   })
-  @ApiResponse({
-    status: HttpStatus.ACCEPTED,
+  @ApiAcceptedResponse({
     description: 'Verification job enqueued successfully.',
     schema: {
       example: {

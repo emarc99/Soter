@@ -16,9 +16,8 @@ export class AppController {
     description:
       'Returns a welcome message and API information. Part of v1 API.',
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Welcome message returned successfully',
+  @ApiOkResponse({
+    description: 'Welcome message returned successfully.',
     schema: {
       example: {
         message: 'Welcome to Pulsefy/Soter API',
