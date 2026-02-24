@@ -14,7 +14,7 @@ import { ApiTags, ApiOperation, ApiOkResponse, ApiCreatedResponse, ApiBadRequest
 @ApiBearerAuth('JWT-auth')
 @Controller('aid')
 export class AidController {
-  constructor(private readonly aidService: AidService) { }
+  constructor(private readonly aidService: AidService) {}
 
   @ApiOperation({
     summary: 'Create a new campaign',

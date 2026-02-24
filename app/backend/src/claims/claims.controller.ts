@@ -9,7 +9,7 @@ import { AppRole } from 'src/auth/app-role.enum';
 @ApiBearerAuth('JWT-auth')
 @Controller('claims')
 export class ClaimsController {
-  constructor(private readonly claimsService: ClaimsService) { }
+  constructor(private readonly claimsService: ClaimsService) {}
 
   @Post()
   @ApiCreatedResponse({
