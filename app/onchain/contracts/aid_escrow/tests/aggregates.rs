@@ -68,7 +68,14 @@ fn test_aggregates_single_created_package() {
     let recipient = Address::generate(&env);
     let expiry = env.ledger().timestamp() + 86400;
 
-    client.create_package(&admin, &1, &recipient, &2000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &1,
+        &recipient,
+        &2000,
+        &token_client.address,
+        &expiry,
+    );
 
     let agg = client.get_aggregates(&token_client.address);
     assert_eq!(agg.total_committed, 2000);

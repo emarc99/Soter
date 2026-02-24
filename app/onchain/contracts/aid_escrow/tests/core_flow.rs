@@ -41,7 +41,14 @@ fn test_core_flow_fund_create_claim() {
     // 3. Create Package
     let pkg_id = 101;
     let expiry = env.ledger().timestamp() + 86400; // 1 day later
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
 
     // Check Package State
     let pkg = client.get_package(&pkg_id);
@@ -109,7 +116,14 @@ fn test_expiry_and_refund() {
     env.ledger().set_timestamp(start_time);
     let pkg_id = 1;
     let expiry = start_time + 100;
-    client.create_package(&admin, &pkg_id, &recipient, &500, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &500,
+        &token_client.address,
+        &expiry,
+    );
 
     // Advance time past expiry
     env.ledger().set_timestamp(expiry + 1);
@@ -161,7 +175,14 @@ fn test_revoke_flow() {
     // If they were still locked, this would fail (Balance 1000, Used 500. Available 500. Request 1000 -> Fail).
     // Since revoked, Available should be 1000 again.
     let pkg_id_2 = 2;
-    client.create_package(&admin, &pkg_id_2, &recipient, &1000, &token_client.address, &0);
+    client.create_package(
+        &admin,
+        &pkg_id_2,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &0,
+    );
 }
 
 #[test]
@@ -185,7 +206,14 @@ fn test_cancel_package_comprehensive() {
     client.fund(&token_client.address, &admin, &2000);
 
     let pkg_id = 1;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &0);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &0,
+    );
 
     // FIX: Use the malicious_user or prefix with underscore
     let _malicious_user = Address::generate(&env);
@@ -202,7 +230,14 @@ fn test_cancel_package_comprehensive() {
 
     // 4. Attempt to cancel claimed package fails
     let pkg_id_2 = 2;
-    client.create_package(&admin, &pkg_id_2, &recipient, &1000, &token_client.address, &0);
+    client.create_package(
+        &admin,
+        &pkg_id_2,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &0,
+    );
     client.claim(&pkg_id_2);
 
     let res_claim = client.try_cancel_package(&pkg_id_2);

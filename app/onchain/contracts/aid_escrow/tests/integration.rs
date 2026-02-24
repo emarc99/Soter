@@ -100,8 +100,22 @@ fn test_multiple_packages() {
     let id2 = 101;
     let expiry = env.ledger().timestamp() + 86400;
 
-    client.create_package(&admin, &id1, &recipient1, &500, &token_client.address, &expiry);
-    client.create_package(&admin, &id2, &recipient2, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &id1,
+        &recipient1,
+        &500,
+        &token_client.address,
+        &expiry,
+    );
+    client.create_package(
+        &admin,
+        &id2,
+        &recipient2,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
 
     // Verify each package is independent
     let p1 = client.get_package(&id1);
@@ -138,12 +152,20 @@ fn test_error_cases() {
     client.fund(&token_client.address, &admin, &5000);
 
     // Test invalid amount (0)
-    let result = client.try_create_package(&admin, &0, &recipient, &0, &token_client.address, &86400);
+    let result =
+        client.try_create_package(&admin, &0, &recipient, &0, &token_client.address, &86400);
     assert_eq!(result, Err(Ok(Error::InvalidAmount)));
 
     // Create valid package first to establish state
     let pkg_id = 1;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &86400);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &86400,
+    );
 
     // Try to claim non-existent package
     let result = client.try_claim(&999);
@@ -363,7 +385,14 @@ fn test_extend_expiration_claimed_package() {
     // Create and claim package
     let pkg_id = 1;
     let expiry = env.ledger().timestamp() + 1000;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
     client.claim(&pkg_id);
 
     // Try to extend claimed package
@@ -393,7 +422,14 @@ fn test_extend_expiration_expired_package() {
     env.ledger().set_timestamp(start_time);
     let pkg_id = 1;
     let expiry = start_time + 100;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
 
     env.ledger().set_timestamp(expiry + 1);
 
@@ -422,7 +458,14 @@ fn test_extend_expiration_zero_additional_time() {
     // Create package
     let pkg_id = 1;
     let expiry = env.ledger().timestamp() + 1000;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
 
     // Try to extend with zero additional time
     let result = client.try_extend_expiration(&pkg_id, &0);
@@ -448,7 +491,14 @@ fn test_extend_expiration_unbounded_package() {
 
     // Create package with unbounded expiration (expires_at = 0)
     let pkg_id = 1;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &0);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &0,
+    );
 
     // Try to extend unbounded package
     let result = client.try_extend_expiration(&pkg_id, &500);
@@ -518,7 +568,14 @@ fn test_extend_expiration_cancelled_package() {
     // Create and cancel package
     let pkg_id = 1;
     let expiry = env.ledger().timestamp() + 1000;
-    client.create_package(&admin, &pkg_id, &recipient, &1000, &token_client.address, &expiry);
+    client.create_package(
+        &admin,
+        &pkg_id,
+        &recipient,
+        &1000,
+        &token_client.address,
+        &expiry,
+    );
     client.cancel_package(&pkg_id);
 
     // Try to extend cancelled package

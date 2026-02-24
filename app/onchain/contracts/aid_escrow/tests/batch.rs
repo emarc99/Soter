@@ -212,13 +212,8 @@ fn test_batch_create_packages_empty_arrays() {
     let recipients: Vec<Address> = Vec::new(&env);
     let amounts: Vec<i128> = Vec::new(&env);
 
-    let ids = client.batch_create_packages(
-        &admin,
-        &recipients,
-        &amounts,
-        &token_client.address,
-        &86400,
-    );
+    let ids =
+        client.batch_create_packages(&admin, &recipients, &amounts, &token_client.address, &86400);
     assert_eq!(ids.len(), 0);
 }
 
@@ -250,13 +245,8 @@ fn test_batch_then_individual_no_id_collision() {
     amounts.push_back(1000_i128);
     amounts.push_back(1000_i128);
 
-    let ids = client.batch_create_packages(
-        &admin,
-        &recipients,
-        &amounts,
-        &token_client.address,
-        &86400,
-    );
+    let ids =
+        client.batch_create_packages(&admin, &recipients, &amounts, &token_client.address, &86400);
     assert_eq!(ids.get(0).unwrap(), 0);
     assert_eq!(ids.get(1).unwrap(), 1);
 

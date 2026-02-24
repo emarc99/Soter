@@ -170,7 +170,9 @@ impl AidEscrow {
             .get(&KEY_DISTRIBUTORS)
             .unwrap_or(Map::new(&env));
         distributors.set(addr, true);
-        env.storage().instance().set(&KEY_DISTRIBUTORS, &distributors);
+        env.storage()
+            .instance()
+            .set(&KEY_DISTRIBUTORS, &distributors);
 
         Ok(())
     }
@@ -185,7 +187,9 @@ impl AidEscrow {
             .get(&KEY_DISTRIBUTORS)
             .unwrap_or(Map::new(&env));
         distributors.remove(addr);
-        env.storage().instance().set(&KEY_DISTRIBUTORS, &distributors);
+        env.storage()
+            .instance()
+            .set(&KEY_DISTRIBUTORS, &distributors);
 
         Ok(())
     }
