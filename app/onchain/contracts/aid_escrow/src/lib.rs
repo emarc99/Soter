@@ -814,6 +814,13 @@ impl AidEscrow {
             .ok_or(Error::PackageNotFound)
     }
 
+    /// Returns only the status of a package.
+    /// Cheaper alternative to get_package for polling frontends.
+    pub fn view_package_status(env: Env, id: u64) -> Result<PackageStatus, Error> {
+        let pkg = Self::get_package(env, id)?;
+        Ok(pkg.status)
+    }
+
     // --- Analytics ---
 
     /// Returns aggregate statistics for a given token.
@@ -836,20 +843,20 @@ impl AidEscrow {
             let idx_key = (symbol_short!("pidx"), i);
             if let Some(pkg_id) = env.storage().persistent().get::<_, u64>(&idx_key) {
                 let pkg_key = (symbol_short!("pkg"), pkg_id);
-                if let Some(package) = env.storage().persistent().get::<_, Package>(&pkg_key)
-                    && package.token == token
-                {
-                    match package.status {
-                        PackageStatus::Created => {
-                            total_committed += package.amount;
-                        }
-                        PackageStatus::Claimed => {
-                            total_claimed += package.amount;
-                        }
-                        PackageStatus::Expired
-                        | PackageStatus::Cancelled
-                        | PackageStatus::Refunded => {
-                            total_expired_cancelled += package.amount;
+                if let Some(package) = env.storage().persistent().get::<_, Package>(&pkg_key) {
+                    if package.token == token {
+                        match package.status {
+                            PackageStatus::Created => {
+                                total_committed += package.amount;
+                            }
+                            PackageStatus::Claimed => {
+                                total_claimed += package.amount;
+                            }
+                            PackageStatus::Expired
+                            | PackageStatus::Cancelled
+                            | PackageStatus::Refunded => {
+                                total_expired_cancelled += package.amount;
+                            }
                         }
                     }
                 }
